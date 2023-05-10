@@ -17,3 +17,25 @@ ALTER TABLE
 ALTER TABLE
 ALTER TABLE
 ALTER TABLE
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+ id | name 
+----+------
+  1 | food
+(1 row)
+
+ id |    name     
+----+-------------
+  1 | Manila
+  2 | Quezon City
+(2 rows)
+
+ id |      name      | description | category_id | branch_id 
+----+----------------+-------------+-------------+-----------
+  1 | cheesecake     | ny style    |           1 |         1
+  2 | chocolate cake | belgian     |           1 |         2
+(2 rows)
+

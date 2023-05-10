@@ -73,3 +73,17 @@ ALTER TABLE products
 	ADD CONSTRAINT fk_branch_id
 	FOREIGN KEY (branch_id)
 	REFERENCES branches(id);
+
+INSERT INTO categories (name) VALUES ('food');
+INSERT INTO branches (name) VALUES ('Manila');
+INSERT INTO branches (name) VALUES ('Quezon City');
+INSERT INTO products (name, description, category_id, branch_id) VALUES ('cheesecake','ny style',1,1);
+INSERT INTO products (name, description, category_id, branch_id) VALUES ('chocolate cake','belgian',1,2);
+
+
+SELECT * FROM categories;
+SELECT * FROM branches;
+SELECT * FROM products;
+
+
+
