@@ -1,3 +1,4 @@
+
 --database: banking_system
 
 DROP TABLE IF EXISTS customers CASCADE;
@@ -86,7 +87,7 @@ BEGIN
 
   IF new_balance < _maintaining_balance THEN
     result := FALSE;
-    RAISE NOTICE 'Account % will have below the % maintaining balance for withdrawal amount %', _id, _maintaining_balance, _amount;
+    RAISE NOTICE 'Account % will have below % maintaining balance for the withdrawal amount of % from %', _id, _maintaining_balance, _amount, current_balance;
   ELSE
     UPDATE accounts SET balance = new_balance WHERE accounts.id = _id;
   END IF;
