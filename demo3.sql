@@ -19,6 +19,25 @@ CREATE TABLE accounts (
 	  REFERENCES customers(id)
 );
 
+DROP TABLE IF EXISTS account_transactions CASCADE;
+CREATE TABLE IF NOT EXISTS account_transactions (
+	id SERIAL PRIMARY KEY,
+	amount NUMERIC NOT NULL,
+	transaction_type VARCHAR(1),
+	account_id INT NOT NULL,
+	CONSTRAINT fk_account_id
+	  FOREIGN KEY (account_id)
+	  REFERENCES accounts(id),
+	beginning_balance DECIMAL NOT NULL,
+	ending_balance DECIMAL NOT NULL
+);
+
+
+ALTER TABLE account_transactions
+  ADD CONSTRAINT check_transaction_type
+  CHECK (transaction_type IN ('W','D'));
+
+
 INSERT INTO customers (first_name, last_name) VALUES ('Raphael','Alampay');
 INSERT INTO accounts (customer_id) VALUES(1);
 
@@ -80,8 +99,7 @@ DECLARE
   new_balance NUMERIC;
   _maintaining_balance NUMERIC;
 BEGIN
-  SELECT balance INTO current_balance FROM accounts WHERE accounts.id = _id;
-  SELECT maintaining_balance INTO _maintaining_balance FROM accounts WHERE accounts.id = _id;
+  SELECT balance, maintaining_balance INTO current_balance,_maintaining_balance FROM accounts WHERE accounts.id = _id;
 
   new_balance := current_balance - _amount;
 
@@ -95,8 +113,60 @@ BEGIN
   RETURN result;
 END;$$;
 
+DROP PROCEDURE IF EXISTS p_withdraw;
+CREATE OR REPLACE PROCEDURE p_withdraw(
+  _id INT,
+  _amount NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  current_balance NUMERIC;
+  new_balance NUMERIC;
+  result BOOLEAN;
+BEGIN
+  SELECT balance INTO current_balance FROM accounts WHERE accounts.id = _id;
+  SELECT withdraw(_id, _amount) INTO result;
+
+  IF result THEN
+    SELECT balance INTO new_balance FROM accounts WHERE accounts.id = _id;
+
+    INSERT INTO account_transactions(account_id, amount, transaction_type, beginning_balance, ending_balance)
+	VALUES (_id, _amount, 'W', current_balance, new_balance);
+  END IF;
+END;$$;
+
+
 -- withdraw
-SELECT withdraw(1,800.0);
+CALL p_withdraw(1, 100.0);
 SELECT * FROM accounts;
+SELECT * FROM account_transactions;
 
 
+DROP PROCEDURE IF EXISTS p_deposit;
+CREATE OR REPLACE PROCEDURE p_deposit(
+  _id INT,
+  _amount NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  current_balance NUMERIC;
+  new_balance NUMERIC;
+  result BOOLEAN;
+BEGIN
+  SELECT balance INTO current_balance FROM accounts WHERE accounts.id = _id;
+  SELECT deposit(_id, _amount) INTO result;
+
+  IF result THEN
+    SELECT balance INTO new_balance FROM accounts WHERE accounts.id = _id;
+
+    INSERT INTO account_transactions(account_id, amount, transaction_type, beginning_balance, ending_balance) VALUES (_id, _amount, 'D', current_balance, new_balance);
+  END IF;
+END;$$;
+
+
+-- deposit
+CALL p_deposit(1, 500.0);
+SELECT * FROM accounts;
+SELECT * FROM account_transactions;
