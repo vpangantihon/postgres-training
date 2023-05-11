@@ -17,6 +17,27 @@ ALTER TABLE
 ALTER TABLE
 ALTER TABLE
 ALTER TABLE
+psql:exercise2.sql:79: ERROR:  could not open file "/home/ubuntu/postgres-training/branches.csv" for reading: Permission denied
+HINT:  COPY FROM instructs the PostgreSQL server process to read a file. You may want a client-side facility such as psql's \copy.
+psql:exercise2.sql:83: ERROR:  could not open file "/home/ubuntu/postgres-training/categories.csv" for reading: Permission denied
+HINT:  COPY FROM instructs the PostgreSQL server process to read a file. You may want a client-side facility such as psql's \copy.
+psql:exercise2.sql:87: ERROR:  could not open file "/home/ubuntu/postgres-training/items.csv" for reading: Permission denied
+HINT:  COPY FROM instructs the PostgreSQL server process to read a file. You may want a client-side facility such as psql's \copy.
+ setval 
+--------
+       
+(1 row)
+
+ setval 
+--------
+       
+(1 row)
+
+ setval 
+--------
+       
+(1 row)
+
 INSERT 0 1
 INSERT 0 1
 INSERT 0 1
